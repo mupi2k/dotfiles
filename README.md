@@ -1,7 +1,7 @@
 Ralph Mike Porter's dotfiles
 ===============
 
-These are Ralph Mike Porter's dotfiles. They personalize things such as aliases, bash
+These are Mike Porter's dotfiles. They personalize things such as aliases, bash
 configurations, git prompts, etc. For example, `.bashrc`.
 
 
