@@ -1,4 +1,4 @@
-Ralph Mike Porter's dotfiles
+Mike Porter's dotfiles
 ===============
 
 These are Mike Porter's dotfiles. They personalize things such as aliases, bash
@@ -8,7 +8,7 @@ configurations, git prompts, etc. For example, `.bashrc`.
 Install
 -------
 
-    git clone ssh://git@stash.csw.l-3com.com:7999/~u155484/dotfiles.git ~.dotfiles
+    git clone ssh://git@github.com:7999/mupi2k/dotfiles.git ~.dotfiles
     cd .dotfiles
     ./bootstrap
 
@@ -41,7 +41,7 @@ and you'll have the same dotfile goodness in your new VM.
 
 
     config.vm.provision "setup dotfiles", type: "shell", privileged: false,
-        inline: "curl -s 'http://bitbucket.csw.l-3com.com/users/u155484/repos/dotfiles/browse/remoteInstall.sh?at=refs%2Fheads%2Fmaster&raw' | bash -s #{ENV['LOGNAME']} "
+        inline: "curl -s 'http://github.com/mupi2k/dotfiles/browse/remoteInstall.sh?at=refs%2Fheads%2Fmaster&raw' | bash -s #{ENV['LOGNAME']} "
 
 What does this do? It is a 'curl pipe' to run the script 'remoteInstall.sh'
 currently found in my dotfiles repo and passes in _your_ userid. The script
@@ -53,9 +53,9 @@ Interested in trying out someone else's dotfiles? Remove the .dotfiles directory
 **inside the VM** and re-run it like this:
 
     rm -rf ~/.dotfiles
-    curl -s 'http://bitbucket.csw.l-3com.com/users/u155484/repos/dotfiles/browse/remoteInstall.sh?at=refs%2Fheads%2Fmaster&raw' | bash -s mporter
+    curl -s 'http://github.com/mupi2k/dotfiles/browse/remoteInstall.sh?at=refs%2Fheads%2Fmaster&raw' | bash -s mporter
 
-**DANGER** This may wreck havoc if you do this in your real world NFS shared
+**DANGER** This may wreak havoc if you do this in your real world NFS shared
 $HOME directory!! It changes the defaults for the install process to allow
 installation without prompting you and backs up all existing dot files.
 
