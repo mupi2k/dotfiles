@@ -1,0 +1,49 @@
+#!/bin/bash 
+
+if [ -z $VERBOSE ]; then VERBOSE=1; fi
+
+argparse() {
+while [[ ! -z $1 ]]; do
+        echo "Arg 1 is $1..."
+        case "$1" in
+                -f*|*force*)
+                        FORCE=1
+                        echo "caugught force!"
+                        ;;
+                restart)
+                        RESTART=1
+                        ;;
+                +v)
+                        VERBOSE=2
+                        ;;
+                +vv)
+                        VERBOSE=3
+                        ;;
+                +vvv)
+                        VERBOSE=4
+                        ;;
+                +vvvv)
+                        VERBOSE=9
+                        ;;
+                verbose=*)
+                        VERBOSE=$(echo $1 | cut -d= -f2)
+                        echo "caught verbose!"
+                        ;;
+                *)
+                        echo "default..."
+                        ;;
+        esac
+        shift
+done
+}
+
+echo "\$\@ is $@"
+
+argparse $@
+
+echo "force = $FORCE"
+echo "restart = $RESTART"
+echo "verbose = $VERBOSE"
+echo "debug = $DEBUG"
+echo "logfile = $LOGFILE"
+

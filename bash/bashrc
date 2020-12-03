@@ -1,0 +1,53 @@
+#!/bin/sh
+###############################################################################
+##  git_linux_resources/bash/bashrc
+##
+##     master bashrc that will load the relevant scripts
+##
+## See ../readme.md
+
+# echo "... $GIT_PATH/bash/bashrc ..."
+
+if [ -n $USE_FUNCTIONS ]; then
+    if [ -f $GIT_PATH/bash/functions ]; then
+        . $GIT_PATH/bash/functions
+    fi
+fi
+
+if [ -n $USE_VADER ]; then
+    if [ -f $GIT_PATH/bash/vader ]; then
+        . $GIT_PATH/bash/vader
+    fi
+fi
+
+if [ -n $USE_PIE ]; then
+    if [ -f $GIT_PATH/bash/pie ]; then
+        . $GIT_PATH/bash/pie
+    fi
+fi
+
+if [ -n $USE_IPMI ]; then
+    if [ -f $GIT_PATH/bash/ipmi ]; then
+        . $GIT_PATH/bash/ipmi
+    fi
+fi
+
+if [ -n $USE_SCREEN ]; then
+    if [ -f $GIT_PATH/bash/screen ]; then
+        . $GIT_PATH/bash/screen
+    fi
+fi
+
+if [ -n $USE_MOXA ]; then
+    if [ -f $GIT_PATH/bash/moxa ]; then
+        . $GIT_PATH/bash/moxa
+    fi
+fi
+
+
+
+#alias z="/usr/bin/ssh -t -A $BASTION_USERNAME@$BASTION_SERVER -p $BASTION_PORT"
+#alias zz="/usr/bin/ssh -t -A $BASTION_USERNAME@$BASTION_SERVER -p $BASTION_PORT \"ssh $1\""
+
+alias sadd='ssh-add -t 12H $HOME/.ssh/id_rsa'
+alias rc="ssh -t -A -p $BASTION_PORT $BASTION_USERNAME@$BASTION_SERVER \"ssh -t rc \"console $1\"\""

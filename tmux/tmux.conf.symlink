@@ -1,0 +1,27 @@
+bind-key -N 'Customized new window' S command-prompt "new-window -n %1 'ssh %1'; split-window -h 'ssh %1'; set synchronize-panes on"
+bind-key -N 'Toggle synchronize-panes' M-s set synchronize-panes
+bind-key -N 'toggle pane logging to ~/tmux-logs' C-p pipe-pane -o 'cat >>$HOME/tmux-logs/#(date +%F)-#{s/^(.+@)?(\w*)$/\2/i:window_name}-#{s/%//:pane_id}.log'
+bind-key -N 'toggle mouse mode' C-m set mouse
+set-option -g mouse on
+set-option -g set-clipboard external
+set-option -g set-titles on
+set-option -g status-keys vi
+set-option -g mode-keys vi
+set-option -g history-limit 10000
+source-file $HOME/.dotfiles/tmux/tmuxline.conf
+new-session
+split-window -h
+split-window -v
+select-layout '6928,271x74,0,0{170x74,0,0,0,100x74,171,0[100x36,171,0,4,100x37,171,37,1]}'
+
+
+# force a reload of the config file
+unbind r
+bind r source-file ~/.tmux.conf
+
+# Display panes length on 'prefix' q
+set -g display-panes-time 8000 # millisecs
+
+# set-window-option -g automatic-rename off
+# set-option -g allow-rename off
+
