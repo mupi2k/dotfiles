@@ -1,0 +1,8 @@
+" set tab to be spaces
+set expandtab
+set tabstop=4
+
+set ls=2
+syntax on
+set nocompatible
+filetype plugin indent on
