@@ -22,6 +22,11 @@ bind r source-file ~/.tmux.conf
 # Display panes length on 'prefix' q
 set -g display-panes-time 8000 # millisecs
 
+# Try using ` as prefix
+set -g prefix `
+unbind C-b
+bind-key ` send-prefix
+
 # set-window-option -g automatic-rename off
 # set-option -g allow-rename off
 
