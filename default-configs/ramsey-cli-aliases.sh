@@ -1,5 +1,4 @@
-echo "loading from custom-config..."
-
+echo "loading from default-configs ... "
 if [ -n $USE_RAMSEY ]; then
 
         alias rct="ramsey console --profile power/core-test"

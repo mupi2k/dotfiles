@@ -1,0 +1,13 @@
+#!/bin/bash
+
+#######################################################################
+#  custom-configs/local:  overrides for dotfiles
+#
+#  This file exists to allow you to put in per-host overrides to the dotfiles
+#    without requiring a separate branch for each isolated host.
+#  Ideally, only "export" statements will live here, and everything else will
+#    be done by the global bashrc file or by .sh (.zsh) scripts in custom-configs
+#
+
+export USE_RAMSEY="YES"
+

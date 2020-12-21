@@ -40,9 +40,9 @@ Look for 'for powerline' in the font description.
 
 Finally, the `.vim/` loaded here requires a minimum Vim version of 8. On Solaris, you will need to activate vim 8.2, which is in the works.  Eventually I will get things in place to stop trying to load everything, and it will get better.  In the mean time, you can use "vim -u NONE" to skip ~/.vimrc.
 
-This version implements `custom_configs` functionality.  The `custom_configs` directory is ignored by git, so you can safely
+This version implements `custom-configs` functionality.  The `custom_configs` directory is ignored by git, so you can safely
 put any overrides into that folder, and the .bashrc/.zshrc will pull them in.  You can't really tweak your .vim folder that way, but 
-you can add a `custom_configs/` to `~/.dotfiles/vim/vim.symlink/pack/` and Vim 8+ should pick that up. 
+you can add a `custom-configs/` to `~/.dotfiles/vim/vim.symlink/pack/` and Vim 8+ should pick that up. 
 
 For example, if you update your airline theme in vim, and want to update your promptline/tmuxline to match, you can use the promptline commands (see the promptline's documentation for help with this...), you can have promptline write to ~/.dotfiles/custom_config/prompline.sh and bash and zsh will execute it. (you will probably need to re-source those config files to pull in your changes, though)
  
