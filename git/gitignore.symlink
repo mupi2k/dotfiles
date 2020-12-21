@@ -1,3 +1,6 @@
+*~
+.*.swp
+*/.netrwhist
+.DS_Store
 .git-gephardt*
 .rebuild-*
-*.swp

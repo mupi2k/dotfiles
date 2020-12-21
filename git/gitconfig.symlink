@@ -70,8 +70,8 @@
 [push]
   default = matching
 [user]
-        name = Porter, Ralph (US) @ CSW.L3Harris.com
-        email = ralph.porter@l3harris.com
+        name = 
+        email = 
 [nodiff]
   external=meld
 

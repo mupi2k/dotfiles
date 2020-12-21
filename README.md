@@ -13,24 +13,40 @@ Install
     ./bootstrap
 
 This will symlink the appropriate files in `.dotfiles` to your home directory.
-CSH users will need to manually add a couple of tweaks.  If you don't use ClearCase, add:
+ - CSH users will need to manually add a couple of tweaks.  If you don't use ClearCase, add:
     alias precmd 'set _exit=$?; set prompt="`$HOME/.promptline2.bash $_exit [**] $WHOAMI ` "; '
 to your .cshrc. This will give you almost all of the bash/git goodies in your prompt.
-If you _do_ use ClearCase, use:
-    alias precmd 'set _exit=$?; set noglob; set ct_pwv=(`ct pwv`); set prompt="`$HOME/.promptline2.bash $_exit [$ct_pwv[4]] $WHOAMI ` "; unset ct_pwv; unset noglob'
-instead.  This will give you the same thing, with the additional benefit that ClearCase views will show up as git branches, with [CC] in front of the branch symbol.
-You will also need to add 
-    setenv LC_ALL en_US.UTF-8 
-(BASH users should use
-    export LC_ALL=en_US.UTF-8
-instead) to get the extra characters to display.
+ - You will also need to make sure `$LC_ALL` is set to `en_US.UTF-8` (assuming you are in the US :D )  
+    - CSH: `setenv LC_ALL en_US.UTF-8`
+    - BASH/ZSH: `export LC_ALL=en_US.UTF-8` 
+
+This dotfiles incorporates the following vim plugins:
+  - [promtline](https://github.com/edkolev/promptline.vim) (doesn't require airline, but much more flexible with it)
+  - [vim-eunuch](https://github.com/tpope/vim-eunuch) (run Unix commands without leaving vim, especially if you forgot to sudo vim...)
+  - [vim-fugitive](https://github.com/tpope/vim-fugitive) (run git commands without leaving vim...)
+  - [vim-vinegar](https://github.com/tpope/vim-vinegar) (yes, I like tim pope's things..)
+  - [tmuxline](https://github.com/edkolev/tmuxline.vim) (use airline theme for tmux status line, too)
+  - [airline](https://github.com/vim-airline/vim-airline) (like promptline, but without running a python daemon)
+  - [airline-themes](https://github.com/vim-airline/vim-airline-themes) (themes for airline)
+
+Note that those are NOT loaded as submodules; this means that they will load without fuss or requiring you to use `--recursive` 
+  when you git clone this.
+
+Most everything is left at defaults, which allows vimrc to be quite small.
 
 You will probably also want to get the "powerline" fonts for best results.  Those are available at 
 https://github.com/powerline/fonts  . Once you download and install those, set your terminal emulator to use those fonts.
+Look for 'for powerline' in the font description.
 
-Finally, the .vimrc loaded here requires a minimum Vim version of 8. On Solaris, you will need to activate vim 8.2, which is in the works.  Eventually I will get things in place to stop trying to load everything, and it will get better.  In the mean time, you can use "vim -u NONE" to skip ~/.vimrc.
+Finally, the `.vim/` loaded here requires a minimum Vim version of 8. On Solaris, you will need to activate vim 8.2, which is in the works.  Eventually I will get things in place to stop trying to load everything, and it will get better.  In the mean time, you can use "vim -u NONE" to skip ~/.vimrc.
 
-Everything else is configured and tweaked within `~/.dotfiles`.
+This version implements `custom_configs` functionality.  The `custom_configs` directory is ignored by git, so you can safely
+put any overrides into that folder, and the .bashrc/.zshrc will pull them in.  You can't really tweak your .vim folder that way, but 
+you can add a `custom_configs/` to `~/.dotfiles/vim/vim.symlink/pack/` and Vim 8+ should pick that up. 
+
+For example, if you update your airline theme in vim, and want to update your promptline/tmuxline to match, you can use the promptline commands (see the promptline's documentation for help with this...), you can have promptline write to ~/.dotfiles/custom_config/prompline.sh and bash and zsh will execute it. (you will probably need to re-source those config files to pull in your changes, though)
+ 
+Everything else is configured and tweaked within `~/.dotfiles`.  
 
 
 Working With VMs?
