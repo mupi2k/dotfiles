@@ -1,25 +1,125 @@
+" vim: set foldmarker={,} foldlevel=-1 foldmethod=marker:
+
+"===================================================================================
+"  DESCRIPTION:  ”Life is frittered away by detail... simplify, simplify.” – Thoreau
+"       AUTHOR:  Jarrod Taylor
+" ____   ____.__                  .__               __
+" \   \ /   /|__| _____           |__| ____ _____ _/  |_  ___________
+"  \   Y   / |  |/     \   ______ |  |/    \\__  \\   __\/  _ \_  __ \
+"   \     /  |  |  Y Y  \ /_____/ |  |   |  \/ __ \|  | (  <_> )  | \/
+"    \___/   |__|__|_|  /         |__|___|  (____  /__|  \____/|__|
+"                     \/                  \/     \/
+"
+"===================================================================================
+
+" initial settings {1
 " set tab to be spaces
 set expandtab
+" set tabs where they belong:
 set tabstop=4
+" set indents for python/js
+set shiftwidth=2
 set hlsearch
-
 set ls=2
 syntax on
 set nocompatible
+set number
 filetype plugin indent on
+"}1
 
+" Source custom-init to allow excluding plugins {1
+let b:customInit=expand('~/.dotfiles/custom-configs/**/custom-init.vim')
+if filereadable(b:customInit)
+    exe 'source' b:customInit
+endif
+
+if !exists("g:exclude")
+    let g:exclude = [""]
+endif
+
+" }1
+
+" Buffer variables that control plugin loading {1
+" let b:pluginList = split(globpath('~/.vim/order-dependent-unite-config', '*.vim'), '\n')
+" let b:pluginList += split(globpath('~/.vim/plugin-configs', '*.vim'), '\n')
+let b:pluginList = split(globpath('~/.vim/pack/plugins/opt/*/plugin', '*.vim'),'\n')
+let b:pluginList += split(globpath('~/.vim/pack/colors/opt/*/plugin', '*.vim'),'\n')
+let b:pluginList += split(globpath('~/.vim/pack/syntax/opt/*/plugin', '*.vim'),'\n')
+" let b:pluginList += split(globpath('~/.dotfiles/custom-configs/**', '*-plugin.vim'), '\n')
+let b:fileList = split(globpath('~/.vim/order-dependent-unite-config', '*.vim'), '\n')
+let b:fileList += split(globpath('~/.vim/vanilla-configs', '*.vim'), '\n')
+let b:fileList += split(globpath('~/.vim/plugin-configs', '*.vim'), '\n')
+let b:fileList += split(globpath('~/.vim/functions', '*.vim'), '\n')
+let b:fileList += split(globpath('~/.dotfiles/custom-configs/**', '*.vim'), '\n')
+"}1
+
+" Set leader keys {1
+let mapleader=" "
+let maplocalleader= '|'
+"}1
+
+" Function to process lists for sourceing and adding bundles {1
+"   modified for vim 8's new built-in package managment interface
+function! ProcessList(listToProcess, functionToCall)
+    for fpath in a:listToProcess
+        let path = split(fpath, "/")
+        if len(path) >= 6
+            let name = path[6]
+        else
+            let name = fpath
+        endif
+        if index(g:exclude, name) >= 0
+            continue
+        else
+            call {a:functionToCall}(name)
+        endif
+    endfor
+endfunction
+
+function! AddBundle(fpath)
+    execute "packadd! " . a:fpath
+endfunction
+
+function! SourceFile(fpath)
+    exe 'source ' a:fpath
+endfunction
+"}1
+
+" Manage plug-ins {1
+if &compatible
+    set nocompatible
+endif
+
+call ProcessList(b:pluginList, 'AddBundle')
+
+" }1
+
+" Source Vim configurations {1
+call ProcessList(b:fileList, "SourceFile")
+" }1
+
+" More defaults: {1
 let g:netrw_winsize = 25
 let g:netrw_liststyle = 3
-let g:netrw_browse_split =3 
+let g:netrw_browse_split =3
 let g:netrw_altv = 1
 
-augroup ProjectDrawer
-  autocmd!
-  autocmd VimEnter * :Vexplore
-augroup END
+" enable persistent undo
+if has("persistent_undo")
+    set undodir=$HOME/.vim_undo
+    set undofile
+endif
+
+" enable undotree on <F5>
+nnoremap <F5> :UndotreeToggle<CR>
 
 let g:airline_powerline_fonts = 1
 let g:airline_theme='cool'
 
 let g:promptline_theme = 'airline'
+" }1
 
+" Generate helptags from loaded plugins: {1
+"    THIS SHOULD BE LAST!!
+silent! helptags ALL
+" }1

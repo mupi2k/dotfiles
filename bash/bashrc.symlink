@@ -50,6 +50,7 @@ export USE_SCREEN="YES"
 export USE_VADER="YES"
 export USE_PIE="YES"
 
+PATH="~/.pyenv/shims:/usr/local/bin:$PATH"
 
 # This allows you to override the definitions above for specific hosts, without breaking your
 #    ability to actual use git to do configs:
