@@ -7,6 +7,9 @@
 
 # see ../readme.md
 
+if [ -n $USE_PIE ]; then
 function vader() {
         /usr/bin/ssh -t -A $BASTION_USERNAME@$BASTION_SERVER -p $BASTION_PORT \"ssh -t -A geekstuff@vader.porterfam.us\"
         }
+fi
+

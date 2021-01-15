@@ -429,12 +429,12 @@ if [[ $VIM_MODE_TRACK_KEYMAP != no ]]; then
         if [[ -n $indicator || $set > 0 ]]; then
             if (( ! $set )); then
                 if [[ $indicator = DEFAULT ]]; then
-                    MODE_INDICATOR_VIINS='%F{15}I%F{8}NSERT%f'
-                    MODE_INDICATOR_VICMD='%F{10}N%F{2}ORMAL%f'
-                    MODE_INDICATOR_REPLACE='%F{9}R%F{1}EPLACE<%f'
-                    MODE_INDICATOR_SEARCH='%F{13}S%F{5}EARCH%f'
-                    MODE_INDICATOR_VISUAL='%F{12}V%F{4}ISUAL%f'
-                    MODE_INDICATOR_VLINE='%F{12}V%F{4}-LINE<%f'
+                    MODE_INDICATOR_VIINS='%F{2}I%F{15}NSERT%f'
+                    MODE_INDICATOR_VICMD='%F{2}N%F{10}ORMAL%f'
+                    MODE_INDICATOR_REPLACE='%F{1}R%F{9}EPLACE<%f'
+                    MODE_INDICATOR_SEARCH='%F{5}S%F{13}EARCH%f'
+                    MODE_INDICATOR_VISUAL='%F{4}V%F{12}ISUAL%f'
+                    MODE_INDICATOR_VLINE='%F{4}V%F{1}-LINE<%f'
                 else
                     MODE_INDICATOR_VICMD=$indicator
                 fi

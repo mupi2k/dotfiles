@@ -1,22 +1,27 @@
-# base definitions used throughout the bashrc system:
+#!/bin/bash
+# vim: set foldmarker=<<,>> foldlevel=0 foldmethod=marker:
 
+# base definitions used throughout the bashrc system:
+# Define usernames <<1
 # Usernames.  Set at least one of these.  Several functions use these later
 #   For affected functions, you can also specify different users for each _USERNAME
 
 #   For example, you can use ec2-user as the BASTION_USERNAME to connect to an EC2 instance.
 #   You can also override that for a single function call or session by manually setting the variable.
 
-export AD_USER=mporter
+#   These can all be (re)defined in $DOTFILES/custom_configs/local
+export AD_USER=""
 export OKTA_USERNAME=$AD_USER
 export BASTION_USERNAME=$AD_USER
-
+# >>1
 # used by CVS, if you use that instead of git, you may need this
 export CVS_RSH="ssh"
 
 # used by a few functions to allow changing the behavior when behind a firewall:
-# if you are behind a corp firewall that restricts
+# if you are behind a corp firewall that restricts ssh
 export REMOTE="NO"
 
+# Define Bastion hosts <<1
 # Servernames.  Set at least $BASTION_SERVER for the jump functions to work as intended.
 #   If you want to have different bastion functions, you can set additional bastions as needed
 #   For example: $EC2_BASTION or $SALT_BASTION
@@ -25,7 +30,9 @@ export REMOTE="NO"
 #  Specify a $BASTION_PORT for each $BASTION_SERVER unless using ssh config hosts, or port 22
 export BASTION_SERVER=34.223.248.104
 export BASTION_PORT=5190
+# >>1
 
+# Define Paths <<1
 # Paths.  Set at least $GIT_PATH to wherever you cloned the git linux resource repo to.
 #  You can change this in `~/.dotfiles/custom-configs/local`, but keep in mind that if you clone this
 #  this outside of ~/.dotfiles, *you need to create that file* or override this here.
@@ -35,11 +42,18 @@ export GIT_PATH="$HOME/.dotfiles"
 # $DOTFILES is the "new" method.
 export DOTFILES="$GIT_PATH"
 export SENTINEL_PATH="$HOME/sentinel-scripts"
+# >>1
 
+# Extended definitions to control what's loaded later <<1
 # Settings.  This allows you to tweak the modules loaded at run time.
 #   For example, if you don't want to load IPMI modules, simply leave $USE_IPMI unset.
 #   Most of these will be pulled in later...
 #
+# If using custom_configs, set these in $DOTFILES/custom-configs/local instead...
+#   If you need to know what options are available to you, most of the *.z?sh files
+#   in custom_configs have an if at the top with <filename>; so if you want the contents
+#   of <filename>.sh to be loaded, define a USE_<filename> export in custom_configs/local
+
 export USE_INTERACTIVE="yes"
 #export  USE_IPMI="YES"
 #export  USE_MOXA="YES"
@@ -49,28 +63,29 @@ export USE_ALIASES="YES"
 export USE_SCREEN="YES"
 export USE_VADER="YES"
 export USE_PIE="YES"
+# >>1
 
 PATH="~/.pyenv/shims:/usr/local/bin:$PATH"
 
+# Load local config <<1
 # This allows you to override the definitions above for specific hosts, without breaking your
-#    ability to actual use git to do configs:
+#    ability to use git to do configs:
 
 if [ -f $DOTFILES/custom-configs/local ]; then
     . $DOTFILES/custom-configs/local
 fi
-
-#  if $DOTFILES/custom-configs/local doesn't exist, nothing happens.  
+#  if $DOTFILES/custom-configs/local doesn't exist, nothing happens.
 #    If it does, it will be pulled in.
 #    Note: This is purposefully pulled in early so that the "settings" above will be effective.
 #      Any .sh files in custom_configs/ will be pulled in later, so they can safely use
 #      anything defined above or in the local file.
-#
+# >>1
 
 ##  !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!  ##
 ########### DON'T MESS WITH THIS SECTION UNLESS YOU KNOW WHAT YOU ARE DOING!! ################
 ##  !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!  ##
 
-
+# Test for interactive session <<1
 # If not running interactively, don't load the interactive stuff:
 case $- in
     *i*) ;;
@@ -82,56 +97,9 @@ if [ -n $USE_INTERACTIVE ]; then
               . $GIT_PATH/bash/interactive
        fi
 fi
+# >>1
 
-# don't put duplicate lines or lines starting with space in the history.
-# See bash(1) for more options
-HISTCONTROL=ignoreboth
-
-# append to the history file, don't overwrite it
-shopt -s histappend
-
-# for setting history length see HISTSIZE and HISTFILESIZE in bash(1)
-HISTSIZE=1000
-HISTFILESIZE=2000
-
-# check the window size after each command and, if necessary,
-# update the values of LINES and COLUMNS.
-shopt -s checkwinsize
-
-# If set, the pattern "**" used in a pathname expansion context will
-# match all files and zero or more directories and subdirectories.
-#shopt -s globstar
-
-# make less more friendly for non-text input files, see lesspipe(1)
-#[ -x /usr/bin/lesspipe ] && eval "$(SHELL=/bin/sh lesspipe)"
-
-# set a fancy prompt (non-color, unless we know we "want" color)
-case "$TERM" in
-    xterm-color|*-256color) color_prompt=yes;;
-esac
-
-# If this is an xterm set the title to user@host:dir
-case "$TERM" in
-xterm*|rxvt*)
-    PS1="\[\e]0;\u@\h: \w\a\]$PS1 "
-    ;;
-*)
-    ;;
-esac
-
-
-# colored GCC warnings and errors
-export GCC_COLORS='error=01;31:warning=01;35:note=01;36:caret=01;32:locus=01:quote=01'
-
-# Alias definitions.
-# You may want to put all your additions into a separate file like
-# ~/.bash_aliases, instead of adding them here directly.
-# See /usr/share/doc/bash-doc/examples in the bash-doc package.
-
-if [ -f ~/.bash_aliases ]; then
-    . ~/.bash_aliases
-fi
-
+# More BASH options <<1
 # enable programmable completion features (you don't need to enable
 # this, if it's already enabled in /etc/bash.bashrc and /etc/profile
 # sources /etc/bash.bashrc).
@@ -143,14 +111,21 @@ if ! shopt -oq posix; then
   fi
 fi
 
+# >>1
+
+# Load default config <<1
 for fname in $(find $DOTFILES/default-configs -name "*.sh*"); do
   if  [ ! -f $DOTFILES/custom-configs/$(echo $fname |  awk -F/ '{print $NF}') ]; then
-    source $fname 
-  fi  
+    source $fname
+  fi
 done
 
+# >>1
+
+# Load custom config <<1
 for fname in $(find $DOTFILES/custom-configs -name "*.sh*"); do
     source $fname
 done
+# >>1
 
 # END.

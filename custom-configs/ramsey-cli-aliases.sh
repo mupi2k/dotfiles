@@ -1,4 +1,3 @@
-echo "loading from custom-config..."
 
 if [ -n $USE_RAMSEY ]; then
 

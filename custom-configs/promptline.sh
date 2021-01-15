@@ -146,12 +146,12 @@ function __promptline_git_status {
   local unmerged_symbol="✗"
   local modified_symbol="+"
   local clean_symbol="✔"
-  local has_untracked_files_symbol="…"
-
+  local has_untracked_files_symbol="U"
+  local deleted_symbol="-"
   local ahead_symbol="↑"
   local behind_symbol="↓"
 
-  local unmerged_count=0 modified_count=0 has_untracked_files=0 added_count=0 is_clean=""
+  local unmerged_count=0 modified_count=0 has_untracked_files=0 added_count=0 is_clean="" deleted_count=0 untracked_count=0
 
   set -- $(git rev-list --left-right --count @{upstream}...HEAD 2>/dev/null)
   local behind_count=$1
@@ -162,6 +162,7 @@ function __promptline_git_status {
     case "$line" in
       M*) modified_count=$(( $modified_count + 1 )) ;;
       U*) unmerged_count=$(( $unmerged_count + 1 )) ;;
+      D*) deleted_count=$(( $deleted_count + 1 )) ;;
     esac
   done < <(git diff --name-status)
 
@@ -171,23 +172,32 @@ function __promptline_git_status {
     esac
   done < <(git diff --name-status --cached)
 
-  if [ -n "$(git ls-files --others --exclude-standard)" ]; then
-    has_untracked_files=1
-  fi
+  while read line; do
+    case "$line" in
+      *) untracked_count=$(( $untracked_count + 1 )) ;;
+    esac
+  done < <(git ls-files --others --exclude-standard)
+
+  #if [ -n "$(git ls-files --others --exclude-standard)" ]; then
+  #  has_untracked_files=1
+  #fi
 
   if [ $(( unmerged_count + modified_count + has_untracked_files + added_count )) -eq 0 ]; then
     is_clean=1
   fi
 
   local leading_whitespace=""
-  [[ $ahead_count -gt 0 ]]         && { printf "%s" "$leading_whitespace$ahead_symbol$ahead_count"; leading_whitespace=" "; }
-  [[ $behind_count -gt 0 ]]        && { printf "%s" "$leading_whitespace$behind_symbol$behind_count"; leading_whitespace=" "; }
-  [[ $modified_count -gt 0 ]]      && { printf "%s" "$leading_whitespace$modified_symbol$modified_count"; leading_whitespace=" "; }
-  [[ $unmerged_count -gt 0 ]]      && { printf "%s" "$leading_whitespace$unmerged_symbol$unmerged_count"; leading_whitespace=" "; }
-  [[ $added_count -gt 0 ]]         && { printf "%s" "$leading_whitespace$added_symbol$added_count"; leading_whitespace=" "; }
-  [[ $has_untracked_files -gt 0 ]] && { printf "%s" "$leading_whitespace$has_untracked_files_symbol"; leading_whitespace=" "; }
-  [[ $is_clean -gt 0 ]]            && { printf "%s" "$leading_whitespace$clean_symbol"; leading_whitespace=" "; }
+  [[ $ahead_count -gt 0 ]]         && { printf "%2s" "$leading_whitespace$ahead_symbol$ahead_count"; leading_whitespace=" "; }
+  [[ $behind_count -gt 0 ]]        && { printf "%2s" "$leading_whitespace$behind_symbol$behind_count"; leading_whitespace=" "; }
+  [[ $modified_count -gt 0 ]]      && { printf "%2s" "$leading_whitespace$modified_symbol$modified_count"; leading_whitespace=" "; }
+  [[ $deleted_count -gt 0 ]]       && { printf "%2s" "$leading_whitespace$deleted_symbol$deleted_count"; leading_whitespace=" "; }
+  [[ $unmerged_count -gt 0 ]]      && { printf "%2s" "$leading_whitespace$unmerged_symbol$unmerged_count"; leading_whitespace=" "; }
+  [[ $added_count -gt 0 ]]         && { printf "%2s" "$leading_whitespace$added_symbol$added_count"; leading_whitespace=" "; }
+  [[ $untracked_count -gt 0 ]]     && { printf "%2s" "$leading_whitespace$has_untracked_files_symbol$untracked_count"; leading_whitespace=" "; }
+  # [[ $has_untracked_files -gt 0 ]] && { printf "%2s" "$leading_whitespace$has_untracked_files_symbol"; leading_whitespace=" "; }
+  [[ $is_clean -gt 0 ]]            && { printf "%2s" "$leading_whitespace$clean_symbol"; leading_whitespace=" "; }
 }
+
 function __promptline_battery {
   local percent_sign="%"
   local battery_symbol=""
@@ -246,17 +256,19 @@ function __promptline_right_prompt {
   # section "y" header
   slice_prefix="${y_sep_fg}${rsep}${y_fg}${y_bg}${space}" slice_suffix="$space${y_sep_fg}" slice_joiner="${y_fg}${y_bg}${alt_rsep}${space}" slice_empty_prefix=""
   # section "y" slices
-  __promptline_wrapper "$(__promptline_vcs_branch)" "$slice_prefix" "$slice_suffix" && { slice_prefix="$slice_joiner"; }
   __promptline_wrapper "${MODE_INDICATOR_PROMPT}" "$slice_prefix" "$slice_suffix" && { slice_prefix="$slice_joiner"; }
 
   # section "z" header
   slice_prefix="${z_sep_fg}${rsep}${z_fg}${z_bg}${space}" slice_suffix="$space${z_sep_fg}" slice_joiner="${z_fg}${z_bg}${alt_rsep}${space}" slice_empty_prefix=""
   # section "z" slices
+  __promptline_wrapper "$(__promptline_vcs_branch)" "$slice_prefix" "$slice_suffix" && { slice_prefix="$slice_joiner"; }
   __promptline_wrapper "$(__promptline_git_status)" "$slice_prefix" "$slice_suffix" && { slice_prefix="$slice_joiner"; }
 
   # close sections
+  export _status="$git_state"
   printf "%s" "$reset"
 }
+
 function __promptline {
   local last_exit_code="${PROMPTLINE_LAST_EXIT_CODE:-$?}"
 
@@ -322,3 +334,5 @@ else
     PROMPT_COMMAND='__promptline;'$'\n'"$PROMPT_COMMAND"
   fi
 fi
+export GIT_STATUS=$(__promptline_git_status)
+

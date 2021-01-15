@@ -7,6 +7,9 @@
 
 # see ../readme.md
 
+if [ -n $USE_PIE ]; then
 function pie() {
         /usr/bin/ssh -t -A -Y -p 5280 mupi@pi.porterfam.us
         }
+fi
+
