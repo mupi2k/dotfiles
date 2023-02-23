@@ -230,7 +230,6 @@ unite-filter-converter_tail	unite.txt	/*unite-filter-converter_tail*
 unite-filter-converter_tail_abbr	unite.txt	/*unite-filter-converter_tail_abbr*
 unite-filter-converter_uniq_word	unite.txt	/*unite-filter-converter_uniq_word*
 unite-filter-converter_word_abbr	unite.txt	/*unite-filter-converter_word_abbr*
-unite-filter-matcher_context	unite.txt	/*unite-filter-matcher_context*
 unite-filter-matcher_default	unite.txt	/*unite-filter-matcher_default*
 unite-filter-matcher_fuzzy	unite.txt	/*unite-filter-matcher_fuzzy*
 unite-filter-matcher_glob	unite.txt	/*unite-filter-matcher_glob*
@@ -390,7 +389,6 @@ unite-source-buffer_tab	unite.txt	/*unite-source-buffer_tab*
 unite-source-change	unite.txt	/*unite-source-change*
 unite-source-command	unite.txt	/*unite-source-command*
 unite-source-custom-options	unite.txt	/*unite-source-custom-options*
-unite-source-directory	unite.txt	/*unite-source-directory*
 unite-source-directory/new	unite.txt	/*unite-source-directory\/new*
 unite-source-file	unite.txt	/*unite-source-file*
 unite-source-file/async	unite.txt	/*unite-source-file\/async*
@@ -406,7 +404,6 @@ unite-source-function	unite.txt	/*unite-source-function*
 unite-source-grep	unite.txt	/*unite-source-grep*
 unite-source-grep-git	unite.txt	/*unite-source-grep-git*
 unite-source-history/unite	unite.txt	/*unite-source-history\/unite*
-unite-source-jump	unite.txt	/*unite-source-jump*
 unite-source-jump_point	unite.txt	/*unite-source-jump_point*
 unite-source-launcher	unite.txt	/*unite-source-launcher*
 unite-source-line	unite.txt	/*unite-source-line*

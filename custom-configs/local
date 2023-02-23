@@ -20,3 +20,4 @@ export USE_SCREEN="YES"
 export USE_VADER="YES"
 export USE_PIE="YES"
 
+alias assume="source assume"

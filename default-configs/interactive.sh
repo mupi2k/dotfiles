@@ -97,5 +97,10 @@ if [ -n $USE_INTERACTIVE ]; then
   alias ll='ls -l'
   alias la='ls -A'
   alias l='ls -CF'
+  if [ -n $WS_CLI ]; then
+    if [ -f $WS_CLI/bash_functions.sh ]; then
+      source $WS_CLI/bash_functions.sh
+    fi
+  fi
 fi
 # .EOF

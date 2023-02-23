@@ -239,6 +239,46 @@ function __promptline_battery {
 
 return 1
 }
+function __get_aws_account(){
+  if [[ -n $AWS_PROFILE ]]; then
+    echo "${AWS_PROFILE:+ }${AWS_PROFILE:u}${AWS_PROFILE:+ }"
+    export AWS_ENV=${AWS_PROFILE:l}
+    return
+  fi
+  if ! [[ -s ~/.aws/credentials ]]; then
+    echo "${AWS_ENV:+ }${AWS_ENV:u}${AWS_ENV:+ }"
+    return
+  fi
+  aws_account_name=""
+  echo ":"
+  export aws_account_name=$(awk -F'= ' '/aws_account_name/ {print $2}' ~/.aws/credentials)
+  if [[ -z $aws_account_name ]]; then
+    set -o pipefail
+    aws_account_number=$(aws sts get-caller-identity | jq -r .Account || echo "1" )
+    export aws_account_name=$(jq -rS '.accountList| sort_by(.accountName) | .[] | [.accountId, .accountName] | join(" ") | ascii_upcase' ~/.aws/sso_accounts.json | awk '/'$aws_account_number'/ {printf("%s", $2)}')
+    echo "aws_account_name = $aws_account_name" >> ~/.aws/credentials
+  fi
+  if [ -n $aws_account_name ]; then
+    export AWS_ENV=$aws_account_name
+    echo " ${aws_account_name}"
+  fi
+}
+
+function __aws_account_prefix() {
+  aws_account_name=$(__get_aws_account)
+  if [ -z $aws_account_name ]; then
+    echo "${warn_sep_fg}${rsep}${warn_fg}${warn_bg}${space}"
+  elif [[ "$aws_account_name" =~ "TEST" ]]; then
+    echo "${fg_test_sep}${rsep}${bg_test}${fg_test}"
+  elif [[ "$aws_account_name" =~ "QA" ]]; then
+    echo "${fg_qa_sep}${rsep}${bg_qa}${fg_qa}"
+  elif [[ "$aws_account_name" =~ "PROD" ]]; then
+    echo "${fg_prod_wtf} ${rsep}${bg_prod}${fg_prod}"
+  else
+    echo "${fg_aws_sep}${rsep}${bg_aws}${fg_aws}"
+  fi
+}
+
 function __promptline_right_prompt {
   local slice_prefix slice_empty_prefix slice_joiner slice_suffix
 
@@ -251,7 +291,8 @@ function __promptline_right_prompt {
   # section "x" header
   slice_prefix="${x_sep_fg}${rsep}${x_fg}${x_bg}${space}" slice_suffix="$space${x_sep_fg}" slice_joiner="${x_fg}${x_bg}${alt_rsep}${space}" slice_empty_prefix=""
   # section "x" slices
-  __promptline_wrapper "${VIRTUAL_ENV##*/}" "$slice_prefix" "$slice_suffix" && { slice_prefix="$slice_joiner"; }
+  __promptline_wrapper "${VIRTUAL_ENV##*/}" "$slice_prefix" "$slice_suffix" && { slice_prefix="$slice_empty_prefix"; }
+  __promptline_wrapper "$(__get_aws_account)" "$(__aws_account_prefix)" "$slice_suffix" && { slice_prefix="$slice_joiner"; }
 
   # section "y" header
   slice_prefix="${y_sep_fg}${rsep}${y_fg}${y_bg}${space}" slice_suffix="$space${y_sep_fg}" slice_joiner="${y_fg}${y_bg}${alt_rsep}${space}" slice_empty_prefix=""
@@ -300,6 +341,18 @@ function __promptline {
   local warn_fg="${wrap}38;5;232${end_wrap}"
   local warn_bg="${wrap}48;5;166${end_wrap}"
   local warn_sep_fg="${wrap}38;5;166${end_wrap}"
+  local fg_aws="${wrap}38;5;231${end_wrap}"
+  local fg_prod="${wrap}38;5;219${end_wrap}"
+  local fg_test="${wrap}38;5;49${end_wrap}"
+  local fg_qa="${wrap}38;5;228${end_wrap}"
+  local bg_aws="${wrap}48;5;7${end_wrap}"
+  local fg_aws_sep="${wrap}38;5;7${end_wrap}"
+  local bg_prod="${wrap}48;5;1${end_wrap}"
+  local fg_prod_wtf="${wrap}38;5;1${end_wrap}"
+  local bg_test="${wrap}48;5;2${end_wrap}"
+  local fg_test_sep="${wrap}38;5;2${end_wrap}"
+  local bg_qa="${wrap}48;5;3${end_wrap}"
+  local fg_qa_sep="${wrap}38;5;3${end_wrap}"
   local x_fg="${wrap}38;5;231${end_wrap}"
   local x_bg="${wrap}48;5;24${end_wrap}"
   local x_sep_fg="${wrap}38;5;24${end_wrap}"
@@ -334,5 +387,6 @@ else
     PROMPT_COMMAND='__promptline;'$'\n'"$PROMPT_COMMAND"
   fi
 fi
-export GIT_STATUS=$(__promptline_git_status)
+export AWS_ENV="test"
+#export GIT_STATUS=$(__promptline_git_status)
 

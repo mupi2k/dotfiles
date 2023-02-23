@@ -8,10 +8,18 @@ set-option -g set-titles on
 set-option -g status-keys vi
 set-option -g mode-keys vi
 set-option -g history-limit 10000
+set-option -g base-index 1
+set-option -g pane-base-index 1
+set-option -g renumber-windows on
+bind-key "|" split-window -h -c "#{pane_current_path}"
+bind-key "\\" split-window -fh -c "#{pane_current_path}"
+
+bind-key "-" split-window -v -c "#{pane_current_path}"
+bind-key "_" split-window -fv -c "#{pane_current_path}"
+
 source-file $HOME/.dotfiles/tmux/tmuxline.conf
 new-session
-split-window -h
-split-window -v
+split-window -h 'sudo bpytop'
 select-layout '6928,271x74,0,0{170x74,0,0,0,100x74,171,0[100x36,171,0,4,100x37,171,37,1]}'
 
 

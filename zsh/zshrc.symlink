@@ -38,7 +38,15 @@ fi
 export ARTIFACTORY_USERNAME=mike.porter@ramseysolutions.com
 export ARTIFACTORY_TOKEN=
 
-export DOTFILES=$HOME/.dotfiles/
+export PULUMI_PREFER_YARN=true
+export PULUMI_CONFIG_PASSPHRASE=
+
+export OBJC_DISABLE_INITIALIZE_FORK_SAFETY=YES
+export WS_CLI="$HOME/rs/ws-cli"
+export DOTFILES=$HOME/.dotfiles
+
+#AWS ENV here is the "group" of accounts you want to use; for example core, buisiness-operations-technology, trusted, etc:
+export AWS_ENV="core"
 # General Settings <<1
 # Autoload tab completion <<2
 #-------------------------------------------------------------------------------
@@ -120,18 +128,21 @@ export GREP_OPTIONS='--color=auto'
 # >>2
 # Use the correct ctags <<2
 #-------------------------------------------------------------------------------
-PATH="~/.pyenv/shims:/usr/local/bin:$PATH"
+PATH="~/.pyenv/shims:/usr/local/bin:~/bin/:$PATH"
 # >>2
 # Editor and display configurations <<2
 #-------------------------------------------------------------------------------
 export EDITOR='vim'
 export VISUAL='vim'
 export GIT_EDITOR=$EDITOR
-export LESS='-imJMWR'
+export LESS='-imJMWR --no-init --quit-if-one-screen'
 export PAGER="less $LESS"
 export MANPAGER=$PAGER
 export GIT_PAGER=$PAGER
-export BROWSER='firefox'
+if [ ! $(uname) = "Darwin" ]; then
+  # DON'T SET FOR OSX; it breaks python's webbrowser module!
+  export BROWSER='firefox'
+fi
 # >>2
 #
 # Eliminate lag between transition from normal/insert mode <<2
@@ -167,14 +178,38 @@ source /usr/local/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
 
 
 # Source Default Configurations <<1
+#  This will only load a "default" config file if a "custom-configs" file of the same name isn't found
+#    This will (hopefully) prevent us from (uselessly) loading a default file only to load definitions over top
+#  If you want to make changes to a 'default' file, simply copy the *whole file* to custom-configs, and then make
+#    your changes.
+#
 for fname in $(find $DOTFILES/default-configs -name "*.sh*"); do
+  if  [ ! -f $DOTFILES/custom-configs/$(echo $fname |  awk -F/ '{print $NF}') ]; then
     source $fname
+  fi
 done
 # >>1
 
 # Source Custom Configurations <<1
-for fname in $(find $DOTFILES/custom-configs -name "*.sh*"); do
+for fname in $(find $DOTFILES/custom-configs -name "*.sh"); do
     source $fname
 done
 # >>1
 
+# Source zsh-specific Configurations <<1
+for fname in $(find $DOTFILES/default-configs -name "*.zsh*"); do
+  if  [ ! -f $DOTFILES/custom-configs/$(echo $fname |  awk -F/ '{print $NF}') ]; then
+    source $fname
+  fi
+done
+for fname in $(find $DOTFILES/custom-configs -name "*.zsh"); do
+    source $fname
+done
+# >>1
+
+# add Pulumi to the PATH
+export PATH=$PATH:$HOME/.pulumi/bin
+
+export NVM_DIR="$HOME/.nvm"
+[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
+[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
