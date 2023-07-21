@@ -40,3 +40,90 @@ zstyle ':fzf-tab:*' fzf-command ftb-tmux-popup
 precmd () { __get_aws_account > /dev/null }
 export PATH="$PATH:$HOME/.rd/bin"
 alias assume="source assume"
+
+push () {
+  gitlab=$(git remote get-url origin | grep gitlab)
+  while getopts ":a:t:m:do" flag
+  do
+    case "${flag}" in
+      a) git add ${OPTARG};;
+      t) if [[ -n $gitlab ]]; then
+          target=${OPTARG}
+        else
+          echo "cannot create merge requests via cli on github"
+          target=""
+          fi;;
+      m) message=${OPTARG};;
+      o) _open='open $(pbpaste)';;
+      d) draft="-o merge_request.draft";;
+      :) if [[ ${OPTARG} == "a" ]]; then
+          git add .
+        elif [[ ${OPTARG} == "t" ]]; then
+          if [[ -n  $gitlab ]]; then
+            target=$(git branch -l master main | sed 's/^[ *]*//')
+          else
+            echo "cannot create merge requests via cli on github"
+            target=""
+          fi
+          fi;;
+    esac
+  done
+  if [[ -z $1 ]]; then
+    cat <<- END
+    Usage: $0 [-a <file/path to add>] [-a] [-d] [-t <branch>] [-m] "commit message"
+      - With no flags, $0 will run 'git commit -am' with your commit message, then
+         git push, and if the repo is in gitlab, will create an MR against main|master.
+      - -a by itself will run 'git add .' before your git commit
+      - -a with a path will add just that path. Multiple -a flags are allowed, and all will be
+         'git add'-ed
+     - -t allows you specify a branch other than main/master as the target (eg '-t test')
+     - -d marks the MR as a draft
+     - -m exists so you can run '$0 -atm' flags :D  Also it allows you to put your commit message
+         someplace other than the last arg.
+     - If you use multiple -t or -m args, only the last one will be used.
+END
+  else
+    if [[ -z $message ]]; then
+      message=${@: -1}
+    fi
+    branch=$(git status | awk '/On\ branch/ {print $3}')
+    if (! [[ $message =~ $branch ]]); then
+      message="[${branch}] ${message}"
+    fi
+    git commit -am ${message}
+    if [[ -z $flag ]]; then
+      if [[ -n $gitlab ]]; then
+        if [[ -z $target ]]; then
+            target=$(git branch -l master main | sed 's/^[ *]*//')
+        fi
+        git push  -o merge_request.create -o merge_request.target=${target} -o merge_request.title=${message} 2> >(grep -o 'https.*' | pbcopy)
+        echo "MR $(pbpaste) created against branch ${target}; URL is copied to your clipboard"
+      else
+        git push
+        echo "did not create MR because upstream repo is not in GitLab"
+      fi
+    else
+      if [[ -n $gitlab ]]; then
+        if [[ -z $target ]]; then
+            target=$(git branch -l master main | sed 's/^[ *]*//')
+        fi
+        git push  ${draft} -o merge_request.create -o merge_request.target=${target} -o merge_request.title=${message} 2> >(grep -o 'https.*' | pbcopy)
+        if [[ -n $(pbpaste) ]]; then
+          echo "MR $(pbpaste) created against branch ${target}; URL is copied to your clipboard"
+        fi
+      else
+        git push
+        echo "did not create MR because upstream repo is not in GitLab"
+      fi
+      if [[ -n $(pbpaste) ]] && [[ -n $_open ]]; then
+        sh -c $_open
+      fi
+    fi
+  fi
+}
+
+export GITLAB_READ_TOKEN=glpat-m3zCevP1Ko8j86psUcY3
+if [[ -f $HOME/rs/ws-pulumi-autologin/pulumi.sh ]]; then
+    source $HOME/rs/ws-pulumi-autologin/pulumi.sh
+fi
+
