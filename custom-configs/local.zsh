@@ -16,7 +16,6 @@ export USE_ALIASES="YES"
 export USE_SCREEN="YES"
 export USE_VADER="YES"
 export USE_PIE="YES"
-export JIRA_API_TOKEN="GgTSYZdQJgzzyklGY17v8034"
 source ~/.zsh/zsh-autosuggestions/zsh-autosuggestions.zsh
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
 
