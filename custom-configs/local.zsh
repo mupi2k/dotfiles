@@ -1,4 +1,3 @@
-export HOMEBREW_GITHUB_API_TOKEN=5903cd5cb923d1d33a606e25ab18bc5eba0b8ca9
 
 function facts {
   export ${1}=${3}
