@@ -1,6 +1,0 @@
-{
-  "dependencies": {
-    "aws-cdk": "^2.79.1",
-    "lerna": "^3.22.1"
-  }
-}

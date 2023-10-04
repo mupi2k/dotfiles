@@ -3,3 +3,5 @@ custom-configs/*
 node_modules/*
 */custom-configs/*
 */node_modules/*
+*.log
+.config.yml
