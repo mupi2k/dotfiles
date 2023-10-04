@@ -181,3 +181,16 @@ Traceback (most recent call last):
 OSError: [Errno 12] Cannot allocate memory
 11/07/23 (10:37:01) | WARNING: Exiting with errorcode (1). Runtime 36 days, 0:30:41 
 
+31/08/23 (12:40:14) | ERROR: Data collection thread failed with exception: [Errno 12] Cannot allocate memory
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.10/site-packages/bpytop.py", line 2958, in _runner
+    collector._collect()
+  File "/usr/local/lib/python3.10/site-packages/bpytop.py", line 3567, in _collect
+    up_stat = psutil.net_if_stats()
+  File "/usr/local/lib/python3.10/site-packages/psutil/__init__.py", line 2221, in net_if_stats
+    return _psplatform.net_if_stats()
+  File "/usr/local/lib/python3.10/site-packages/psutil/_psosx.py", line 261, in net_if_stats
+    names = net_io_counters().keys()
+OSError: [Errno 12] Cannot allocate memory
+31/08/23 (12:40:15) | WARNING: Exiting with errorcode (1). Runtime 10 days, 5:08:10 
+

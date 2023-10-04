@@ -126,4 +126,4 @@ export GITLAB_READ_TOKEN=glpat-m3zCevP1Ko8j86psUcY3
 if [[ -f $HOME/rs/ws-pulumi-autologin/pulumi.sh ]]; then
     source $HOME/rs/ws-pulumi-autologin/pulumi.sh
 fi
-
+alias girl="grep -iRl --exclude-dir='node_packages' --exclude-dir='_temp' --exclude-dir='.git'"
