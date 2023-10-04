@@ -1,2 +1,5 @@
 */.netrwhist
 custom-configs/*
+node_modules/*
+*/custom-configs/*
+*/node_modules/*
