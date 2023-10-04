@@ -19,7 +19,6 @@ export USE_VADER="YES"
 export USE_PIE="YES"
 export JIRA_API_TOKEN="GgTSYZdQJgzzyklGY17v8034"
 source ~/.zsh/zsh-autosuggestions/zsh-autosuggestions.zsh
-export ARTIFACTORY_TOKEN="cmVmdGtuOjAxOjE2OTIxOTc3NTM6VXJ3bXBHSDc3SVkweDJjbWkxOHExNjNpNHBT"
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
 
 source ~/rs/fzf-tab/fzf-tab.plugin.zsh
@@ -122,7 +121,6 @@ END
   fi
 }
 
-export GITLAB_READ_TOKEN=glpat-m3zCevP1Ko8j86psUcY3
 if [[ -f $HOME/rs/ws-pulumi-autologin/pulumi.sh ]]; then
     source $HOME/rs/ws-pulumi-autologin/pulumi.sh
 fi
