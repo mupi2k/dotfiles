@@ -1,0 +1,5 @@
+#!/usr/bin/env bash
+PS3="choose your adventure: "
+select CHOICE in $(curl -s ascii.live/list | jq -r '.frames[]'); do
+  curl ascii.live/$CHOICE
+  done

@@ -117,6 +117,11 @@ let g:airline_powerline_fonts = 1
 let g:airline_theme='cool'
 
 let g:promptline_theme = 'airline'
+
+" override some colors:
+highlight Pmenu ctermfg=188 ctermbg=31 guifg=#E4E4E4 guibg=#0087AF
+hi PmenuSel  ctermfg=59 ctermbg=188 guifg=#585858 guibg=#E4E4E4
+hi SpellCap ctermfg=196 ctermbg=188 guifg=#ff0000 guibg=#E4E4E4
 " }1
 
 " Generate helptags from loaded plugins: {1
