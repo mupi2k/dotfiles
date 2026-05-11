@@ -16,6 +16,14 @@ if [[ pyenv ]]; then
 
   export PYENV_VIRTUALENV_DISABLE_PROMPT=1
 
+  _get_parent_dir() {
+	if [ -z ${1%/*} ]; then
+	  echo "/"
+	else
+	  echo ${1%/*}
+	fi
+  }
+
   function check_parent() {
     local check_dir=${1##*/}
     if [ "$1" = "/" ]; then
@@ -27,7 +35,7 @@ if [[ pyenv ]]; then
       pyenv activate ${1##*/}
       return 0
     else
-      check_parent $( echo $1 |  awk -F '/' '{ if (NF <= 2) printf("%s", "/");for (i = 2; i < NF ; i++) {printf("/%s",$i);} print "";}')
+      check_parent $( _get_parent_dir $1 )
     fi
     return 0
   }
@@ -38,7 +46,7 @@ if [[ pyenv ]]; then
       pyenv deactivate > /dev/null 2>&1
       pyenv activate $VENV_CUR
     else
-      check_parent $( echo $PWD | awk -F '/' '{ if (NF <= 2) printf("%s", "/");for (i = 2; i < NF ; i++) {printf("/%s",$i);} print "";}')
+      check_parent $( _get_parent_dir $1 )
     fi
   }
   # >>1
