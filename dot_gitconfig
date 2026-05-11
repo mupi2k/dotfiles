@@ -1,0 +1,133 @@
+[color]
+  ui = auto
+
+[color "branch"]
+  current = yellow reverse
+  local   = yellow
+  remote  = green
+
+[color "diff"]
+  meta = yellow bold
+  frag = magenta bold
+  old  = red bold
+  new  = green bold
+
+[color "status"]
+  added     = yellow
+  changed   = green
+  untracked = cyan
+
+[merge]
+  tool = meld
+
+[alias]
+  whodunit = blame
+  cob = "!f() { git checkout $(git show-ref --verify --quiet refs/heads/\"$1\" || echo '-b') \"$1\"; }; f"
+  co = !git checkout $1 && git pull && :
+  graphviz = "!f() { echo 'digraph git {' ; git log --pretty='format:  %h -> { %p }' \"$@\" | sed 's/[0-9a-f][0-9a-f]*/\"&\"/g' ; echo '}'; }; f"
+  serve = !git daemon --reuseaddr --verbose  --base-path=. --export-all ./.git
+  ci = commit
+  cr = clone --recursive
+  # lc = log --color --oneline --graph --decorate
+  graph = log -20 --graph --all --pretty=format:'%C(yellow)%h%Creset%C(bold yellow)%d%Creset %<(40,trunc)%s%Cgreen%Creset' --abbrev-commit
+  safereset = "!f() { \
+    trap 'echo ERROR: Operation failed; return' ERR; \
+    echo Making sure there are no changes...; \
+    last_status=$(git status --porcelain);\
+    if [[ $last_status != \"\" ]]; then\
+    echo There are dirty files:;\
+    echo \"$last_status\";\
+    echo;\
+    echo -n \"Enter Y if you would like to DISCARD these changes or W to commit them as WIP: \";\
+    read dirty_operation;\
+    if [ \"$dirty_operation\" == \"Y\" ]; then \
+      echo Resetting...;\
+      git reset --hard;\
+    elif [ \"$dirty_operation\" == \"W\" ]; then\
+      echo Comitting WIP...;\
+      git commit -a --message='WIP' > /dev/null && echo WIP Comitted;\
+    else\
+      echo Operation cancelled;\
+      exit 1;\
+    fi;\
+    fi;\
+  }; \
+  f"
+
+  sw = "!f() { \
+    trap 'echo ERROR: Operation failed; return' ERR; \
+    \
+    [ -z \"$1\" ] && echo "SHA/branch required, e.g 73bd32f" && exit 1; \
+    git safereset;\
+    echo ---- Checking out $1 ----; \
+    git checkout $1;\
+    echo ---- Restoring WIP if exists ----; \
+    last_commit=$(git log -1 HEAD --pretty=format:%s);\
+    [ \"$last_commit\" == \"WIP\" ] && { echo Reverting WIP commit... && git reset --soft HEAD~1; } || echo No WIP commit;\
+  }; \
+  f"
+
+  switch-back = "!f() { \
+    trap 'echo ERROR: Operation failed; return' ERR; \
+    \
+    echo ---- Checking out previous branch ----; \
+    git switch @{-1};\
+  }; \
+  f"
+
+  # show rebase starting points, deleted branches, etc
+  orphan = !git log --pretty=format:'%C(yellow)%h%Creset%C(bold yellow)%d%Creset %s%Cgreen (%cr) %C(white)<%an>%Creset' --abbrev-commit --graph --decorate `git reflog | cut -c1-7`
+  orphank = !gitk --all `git reflog | cut -c1-7`&
+
+  st = status
+  dc = diff --cached
+  amend = commit --amend
+  aa = add --all
+  ff = merge --ff-only
+  pullff = pull --ff-only
+  noff = merge --no-ff
+  fa = fetch --all
+  pom = push origin master
+  b = branch
+  ds = diff --stat=160,120
+  dh1 = diff HEAD~1
+
+  #
+  # Fancy logging.
+  # h = head
+  # hp = head with patch
+  # r = recent commits, only current branch
+  # ra = recent commits, all reachable refs
+  # l = all commits, only current branch
+  # la = all commits, all reachable refs
+  lh   = !git log --all --pretty=format: --name-only --diff-filter=A | sort -u
+  roots = rev-list --max-parents=0 HEAD
+  head = !git l -1
+  h = !git head
+  hp = "!. ~/.dotfiles/bin/git-pretty && show_git_head"
+  r = !git l -30
+  ra = !git r --all
+  rak = !git r --all `git reflog | cut -c1-7`
+  l = "!. ~/.dotfiles/bin/git-pretty && pretty_git_log"
+  la = !git l --all
+  lak = !git l --all `git reflog | cut -c1-7`
+
+[push]
+  default = simple
+	autoSetupRemote = true
+[user]
+        name = Mike Porter
+        email = mike.porter@daveramsey.com
+[nodiff]
+  external=meld
+
+[branch]
+  autosetupmerge = simple
+[http]
+  sslVerify = false
+[credential]
+	helper = cache --timeout 14400
+[core]
+	excludesfile = ~/.gitignore_global
+	editor = vim
+

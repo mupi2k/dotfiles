@@ -1,0 +1,17 @@
+# Non-dotfile directories — not managed by chezmoi
+bash
+git
+tmux
+zsh
+ssh
+config
+default-configs
+custom-configs
+
+# Repo files
+README.md
+LICENSE
+bootstrap
+install.sh
+remoteinstall.sh
+easter
