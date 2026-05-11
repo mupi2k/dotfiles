@@ -4,7 +4,6 @@ git
 tmux
 zsh
 ssh
-config
 default-configs
 custom-configs
 
