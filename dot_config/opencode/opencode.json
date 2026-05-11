@@ -1,0 +1,26 @@
+{
+  "$schema": "https://opencode.ai/config.json",
+  "plugin": [
+    "@bdliyq/opencode-rate-limit-retry@latest"
+      ],
+  "provider": {
+    "ollama": {
+      "models": {
+        "kimi-k2.5:cloud": {
+          "_launch": false,
+          "limit": {
+            "context": 262144,
+            "output": 262144
+          },
+          "name": "kimi-k2.5:cloud"
+        }
+      },
+      "name": "Ollama",
+      "npm": "@ai-sdk/openai-compatible",
+      "options": {
+        "baseURL": "http://127.0.0.1:11434/v1"
+      }
+    },
+
+  }
+}
