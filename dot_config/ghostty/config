@@ -1,0 +1,22 @@
+background = #000000
+foreground = #cccccc
+window-theme = dark
+
+# Palette: Ghostty One Dark nudged toward more contrast
+# 0-7 normal, 8-15 bright
+palette = 0=#000000
+palette = 1=#d06b6b
+palette = 2=#8fbc5f
+palette = 3=#d7af5f
+palette = 4=#5f87d7
+palette = 5=#af6fb5
+palette = 6=#5fafaf
+palette = 7=#c0c0c0
+palette = 8=#555555
+palette = 9=#ff5f5f
+palette = 10=#87d75f
+palette = 11=#ffd75f
+palette = 12=#5f87ff
+palette = 13=#d787d7
+palette = 14=#5fd7d7
+palette = 15=#ffffff
