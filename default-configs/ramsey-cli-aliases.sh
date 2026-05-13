@@ -33,5 +33,18 @@ if [ -n $USE_RAMSEY ]; then
         alias kwe="ramsey kw --profile power/events --"
         alias rcfws="ramsey console --profile power/financial-wellness-sandbox"
         alias kwfws="ramsey kw --profile power/financial-wellness-sandbox --"
+
+        function pl {
+          if ! [ -z $1 ]; then
+            source assume $1
+          fi
+          AWS_ACCOUNT_ID=$(aws sts get-caller-identity --query 'Account' --output text)
+          PULUMI_BACKEND_URL="s3://rs-pulumi-state-$AWS_ACCOUNT_ID"
+          matched_account=$(jq -r ".accountList | sort_by(.accountName)[] | [.accountId,.accountName] | @tsv" ~/.aws/sso_accounts.json | grep $AWS_ACCOUNT_ID | awk '{print $2}')
+          echo "setting PULUMI_BACKEND_URL to $PULUMI_BACKEND_URL \e[90m($matched_account)\e[0m"
+          export PULUMI_BACKEND_URL=$PULUMI_BACKEND_URL
+        }
+
+        precmd () { __get_aws_account > /dev/null }
 fi
 

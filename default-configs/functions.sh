@@ -136,3 +136,114 @@ v () {
   echo $TIMESTAMP
 }
 
+
+function psd () {
+  pulumi stack --show-urns | awk -F '::' '/urn:pulumi:.*/ {if ($3 ~ /'$1'/) printf "%s => %s\n", $3, $NF}'
+}
+
+# Git: commit, push, and optionally create a GitLab MR
+push () {
+  gitlab=$(git remote get-url origin | grep gitlab)
+  while getopts ":a:t:m:do" flag
+  do
+    case "${flag}" in
+      a) git add ${OPTARG};;
+      t) if [[ -n $gitlab ]]; then
+          target=${OPTARG}
+        else
+          echo "cannot create merge requests via cli on github"
+          target=""
+          fi;;
+      m) message=${OPTARG};;
+      o) _open='open $(pbpaste)';;
+      d) draft="-o merge_request.draft";;
+      :) if [[ ${OPTARG} == "a" ]]; then
+          git add .
+        elif [[ ${OPTARG} == "t" ]]; then
+          if [[ -n  $gitlab ]]; then
+            target=$(git branch -l master main | sed 's/^[ *]*//')
+          else
+            echo "cannot create merge requests via cli on github"
+            target=""
+          fi
+          fi;;
+    esac
+  done
+  if [[ -z $1 ]]; then
+    cat <<- END
+    Usage: $0 [-a <file/path to add>] [-a] [-d] [-t <branch>] [-m] "commit message"
+      - With no flags, $0 will run 'git commit -am' with your commit message, then
+         git push, and if the repo is in gitlab, will create an MR against main|master.
+      - -a by itself will run 'git add .' before your git commit
+      - -a with a path will add just that path. Multiple -a flags are allowed.
+      - -t allows you to specify a branch other than main/master as the target (eg '-t test')
+      - -d marks the MR as a draft
+      - -m exists so you can run '$0 -atm' flags :D
+END
+  else
+    if [[ -z $message ]]; then
+      message=${@: -1}
+    fi
+    branch=$(git status | awk '/On\ branch/ {print $3}')
+    if (! [[ $message =~ $branch ]]); then
+      message="[${branch}] ${message}"
+    fi
+    git commit -am ${message}
+    if [[ -z $flag ]]; then
+      if [[ -n $gitlab ]]; then
+        if [[ -z $target ]]; then
+            target=$(git branch -l master main | sed 's/^[ *]*//')
+        fi
+        git push -o merge_request.create -o merge_request.target=${target} -o merge_request.title=${message} 2> >(grep -o 'https.*' | pbcopy)
+        echo "MR $(pbpaste) created against branch ${target}; URL is copied to your clipboard"
+      else
+        git push
+        echo "did not create MR because upstream repo is not in GitLab"
+      fi
+    else
+      if [[ -n $gitlab ]]; then
+        if [[ -z $target ]]; then
+            target=$(git branch -l master main | sed 's/^[ *]*//')
+        fi
+        git push ${draft} -o merge_request.create -o merge_request.target=${target} -o merge_request.title=${message} 2> >(grep -o 'https.*' | pbcopy)
+        if [[ -n $(pbpaste) ]]; then
+          echo "MR $(pbpaste) created against branch ${target}; URL is copied to your clipboard"
+        fi
+      else
+        git push
+        echo "did not create MR because upstream repo is not in GitLab"
+      fi
+      if [[ -n $(pbpaste) ]] && [[ -n $_open ]]; then
+        sh -c $_open
+      fi
+    fi
+  fi
+}
+
+function fzv {
+  _fz=$(fzf)
+  vim $_fz
+  echo $_fz
+}
+
+function fzc {
+  _fz=$(fzf)
+  cd ${_fz%/*}
+  echo $_fz
+}
+
+# Upgrade all yarn deps to latest exact versions
+# TODO: add yarn berry (yarn berry: yarn up --latest)
+function yule {
+  echo "Happy Yule!"
+  if [[ -f package.json ]]; then
+    if [[ -n $1 ]]; then
+      yarn upgrade $1 --latest --exact
+    else
+      yarn upgrade --latest --exact
+    fi
+  else
+    echo "no package.json found in $(pwd)"
+  fi
+  echo "Happy Yule!"
+}
