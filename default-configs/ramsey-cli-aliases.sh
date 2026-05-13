@@ -34,6 +34,63 @@ if [ -n $USE_RAMSEY ]; then
         alias rcfws="ramsey console --profile power/financial-wellness-sandbox"
         alias kwfws="ramsey kw --profile power/financial-wellness-sandbox --"
 
+        # AWS/CodeArtifact/ECR config — Ramsey-specific values, candidates for
+        # generalization once login() is decoupled from a single AWS profile
+        export CA_DOMAIN="ramsey-solutions"
+        export CA_DOMAIN_OWNER="058238361356"
+        export CA_REGION="us-east-1"
+        export CA_TOKEN_DURATION=43200
+        export ECR_REGION="us-east-1"
+        export ECR_ACCOUNTS=("674907502808" "058238361356")
+
+        function login {
+          local token_json token_err
+          if ! aws sts get-caller-identity --profile core-test --no-cli-pager &> /dev/null; then
+            echo "Not logged in to AWS, starting SSO flow..."
+            source assume core-test
+            if [ $? -ne 0 ]; then
+              echo "[ERROR] Failed to authenticate with AWS" >&2
+              return 1
+            fi
+          else
+            echo "Already logged in to AWS"
+          fi
+          token_err=$(mktemp)
+          token_json=$(aws codeartifact get-authorization-token \
+            --profile core-test \
+            --domain "$CA_DOMAIN" \
+            --domain-owner "$CA_DOMAIN_OWNER" \
+            --region "$CA_REGION" \
+            --duration-seconds "$CA_TOKEN_DURATION" \
+            --no-cli-pager 2>|"$token_err")
+          local token
+          token=$(echo "$token_json" | jq -r '.authorizationToken // empty')
+          if [ -z "$token" ]; then
+            echo "[ERROR] Failed to get CodeArtifact token." >&2
+            [ -s "$token_err" ] && echo "  AWS error: $(cat "$token_err")" >&2
+            rm -f "$token_err"
+            return 1
+          fi
+          rm -f "$token_err"
+          export CODEARTIFACT_AUTH_TOKEN="$token"
+          echo "  CodeArtifact token refreshed (expires in ~12h)"
+          if command -v docker &> /dev/null; then
+            local ecr_password ecr_err
+            ecr_err=$(mktemp)
+            if ecr_password=$(aws ecr get-login-password --profile core-test --region "$ECR_REGION" --no-cli-pager 2>|"$ecr_err"); then
+              rm -f "$ecr_err"
+              for account in "${ECR_ACCOUNTS[@]}"; do
+                echo "$ecr_password" | docker login --username AWS --password-stdin "${account}.dkr.ecr.${ECR_REGION}.amazonaws.com" 2> /dev/null
+              done
+              echo "  ECR: configured"
+            else
+              echo "[WARN] Failed to get ECR login password" >&2
+              [ -s "$ecr_err" ] && echo "  AWS error: $(cat "$ecr_err")" >&2
+              rm -f "$ecr_err"
+            fi
+          fi
+        }
+
         function pl {
           if ! [ -z $1 ]; then
             source assume $1
