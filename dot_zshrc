@@ -35,11 +35,10 @@ if [ -e $HOME/.local/lib/python3.8/.pyenv/versions/3.8.5/lib/python3.8/site-pack
 
 fi
 
-export ARTIFACTORY_USERNAME=mike.porter@daveramsey.com
-export ARTIFACTORY_TOKEN=
-
 export PULUMI_PREFER_YARN=true
 export PULUMI_CONFIG_PASSPHRASE=
+
+source ~/.zsh/secrets.zsh
 
 export OBJC_DISABLE_INITIALIZE_FORK_SAFETY=YES
 export WS_CLI="$HOME/rs/ws-cli"
