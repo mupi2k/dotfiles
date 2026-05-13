@@ -1,0 +1,32 @@
+Host *
+  AddKeysToAgent yes
+  UseKeychain yes
+  IdentityFile ~/.ssh/id_ed25519
+
+Host  🏆
+  Hostname  172.25.101.26
+
+Host 10.105.*
+  User ansible
+  ForwardAgent yes
+  RequestTTY force
+
+Match User ansible
+  IdentityFile ~/.ssh/ansible
+
+Host 🦆
+  Hostname 172.25.101.20
+
+Host 🫃
+  Hostname 172.25.101.19
+
+Host 🙈
+  Hostname 172.25.101.22
+
+Host ntfy
+  Hostname ntfy-host.porterfam.us
+  User ec2-user
+  IdentityFile ~/.ssh/ntfy.pem
+  ForwardAgent yes
+  RequestTTY force
+

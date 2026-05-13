@@ -3,14 +3,15 @@ bash
 git
 tmux
 zsh
-ssh
 default-configs
 custom-configs
 
 # Repo files
 README.md
 LICENSE
-bootstrap
 install.sh
 remoteinstall.sh
 easter
+
+# macOS-only
+{{ if ne .chezmoi.os "darwin" }}dot_Brewfile{{ end }}
