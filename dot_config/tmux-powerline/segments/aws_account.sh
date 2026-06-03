@@ -10,7 +10,7 @@
 # expired and re-validation is pending/failed.
 #
 # Theme entry (between vcs_others and battery):
-#   "aws_account 188 59 default_separator no_sep_bg_color no_sep_fg_color both_disable separator_disable"
+#   "aws_account 24 59 default_separator no_sep_bg_color no_sep_fg_color both_disable separator_disable"
 
 readonly _AWS_SEP=$(printf '\xee\x82\xb2')   # U+E0B2 powerline bold left separator
 readonly _AWS_VALIDATE_TTL=3600              # re-validate every hour

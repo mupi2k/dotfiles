@@ -83,7 +83,7 @@ if [ -z "$TMUX_POWERLINE_RIGHT_STATUS_SEGMENTS" ]; then
 		"vcs_staged 188 59"
 		"vcs_modified 188 59"
 		"vcs_others 188 59"
-		"aws_account 188 59 default_separator no_sep_bg_color no_sep_fg_color both_disable separator_disable"
+		"aws_account 24 59 default_separator no_sep_bg_color no_sep_fg_color both_disable separator_disable"
 		#"macos_notification_count 24 231"
 		#"mailcount 24 231"
 		#"now_playing 31 188"
