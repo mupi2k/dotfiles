@@ -1,6 +1,3 @@
-# tmux plugin submodules — cloned by git, not managed by chezmoi
-dot_config/tmux/plugins/**
-
 # Non-dotfile directories — not managed by chezmoi
 default-configs
 custom-configs
