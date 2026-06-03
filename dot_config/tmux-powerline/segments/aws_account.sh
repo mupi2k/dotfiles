@@ -60,7 +60,8 @@ run_segment() {
     fi
 
     local prev_bg="${TMUX_POWERLINE_DEFAULT_BACKGROUND_COLOR:-24}"
-    printf '#[fg=colour%d,bg=colour%s]%s#[fg=colour%d,bg=colour%d] %s ' \
+    printf '#[fg=colour%d,bg=colour%s]%s#[fg=colour%d,bg=colour%d] %s #[fg=colour%s,bg=colour%d]%s' \
         "$bg" "$prev_bg" "$_AWS_SEP" \
-        "$fg" "$bg"      "$account_upper"
+        "$fg" "$bg"      "$account_upper" \
+        "$prev_bg" "$bg" "$_AWS_SEP"
 }
