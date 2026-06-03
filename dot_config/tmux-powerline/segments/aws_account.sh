@@ -10,7 +10,7 @@
 # expired and re-validation is pending/failed.
 #
 # Theme entry (between vcs_others and battery):
-#   "aws_account 24 59 default_separator no_sep_bg_color no_sep_fg_color both_disable separator_disable"
+#   "aws_account 24 59 default_separator no_sep_bg_color no_sep_fg_color"
 
 readonly _AWS_SEP=$(printf '\xee\x82\xb2')   # U+E0B2 powerline bold left separator
 readonly _AWS_VALIDATE_TTL=3600              # re-validate every hour
@@ -59,9 +59,10 @@ run_segment() {
     else                                      bg=7; fg=231
     fi
 
-    local prev_bg="${TMUX_POWERLINE_DEFAULT_BACKGROUND_COLOR:-24}"
-    printf '#[fg=colour%d,bg=colour%s]%s#[fg=colour%d,bg=colour%d] %s #[fg=colour%s,bg=colour%d]%s' \
-        "$bg" "$prev_bg" "$_AWS_SEP" \
-        "$fg" "$bg"      "$account_upper" \
-        "$prev_bg" "$bg" "$_AWS_SEP"
+    local bar_bg="${TMUX_POWERLINE_DEFAULT_BACKGROUND_COLOR:-24}"
+    printf '#[fg=colour%d,bg=colour%d]%s#[fg=colour%d,bg=colour%d] %s #[fg=colour%d,bg=colour%d]%s#[bg=colour%d]' \
+        "$bg" "$bar_bg"  "$_AWS_SEP" \
+        "$fg" "$bg"       "$account_upper" \
+        "$bar_bg" "$bg"  "$_AWS_SEP" \
+        "$bar_bg"
 }
