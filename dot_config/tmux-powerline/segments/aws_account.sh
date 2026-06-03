@@ -12,7 +12,6 @@
 # Theme entry (between vcs_others and battery):
 #   "aws_account 188 59 default_separator no_sep_bg_color no_sep_fg_color both_disable separator_disable"
 
-readonly _AWS_PREV_BG=188
 readonly _AWS_SEP=$(printf '\xee\x82\xb2')   # U+E0B2 powerline bold left separator
 readonly _AWS_VALIDATE_TTL=3600              # re-validate every hour
 
@@ -45,7 +44,6 @@ run_segment() {
                     tmux set-option -p -t "$pane_id" @aws_profile_validated "0"
                 fi
                 tmux set-option -pqu -t "$pane_id" @aws_profile_validating
-                tmux refresh-client -S
             ) &>/dev/null &
             disown
         fi
@@ -61,7 +59,8 @@ run_segment() {
     else                                      bg=7; fg=231
     fi
 
-    printf '#[fg=colour%d,bg=colour%d]%s#[fg=colour%d,bg=colour%d] %s ' \
-        "$bg" "$_AWS_PREV_BG" "$_AWS_SEP" \
-        "$fg" "$bg"           "$account_upper"
+    local prev_bg="${TMUX_POWERLINE_DEFAULT_BACKGROUND_COLOR:-24}"
+    printf '#[fg=colour%d,bg=colour%s]%s#[fg=colour%d,bg=colour%d] %s ' \
+        "$bg" "$prev_bg" "$_AWS_SEP" \
+        "$fg" "$bg"      "$account_upper"
 }

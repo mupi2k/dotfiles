@@ -31,7 +31,7 @@ TMUX_POWERLINE_DEFAULT_RIGHTSIDE_SEPARATOR=${TMUX_POWERLINE_DEFAULT_RIGHTSIDE_SE
 # shellcheck disable=SC2128
 if [ -z "$TMUX_POWERLINE_WINDOW_STATUS_CURRENT" ]; then
 	TMUX_POWERLINE_WINDOW_STATUS_CURRENT=(
-		"#[fg=colour31,bg=colour24,nobold,nounderscore,noitalics]"
+		"#[fg=colour24,bg=colour31,nobold,nounderscore,noitalics]"
 		"$TMUX_POWERLINE_DEFAULT_LEFTSIDE_SEPARATOR"
 		"#[fg=colour188,bg=colour31] #I#F "
 		"$TMUX_POWERLINE_SEPARATOR_RIGHT_THIN"
