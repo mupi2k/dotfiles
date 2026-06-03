@@ -365,6 +365,14 @@ function __promptline {
   if [[ -n ${ZSH_VERSION-} ]]; then
     PROMPT="$(__promptline_left_prompt)"
     RPROMPT="$(__promptline_right_prompt)"
+    if [[ -n $TMUX ]]; then
+      local _pane_id _prev_profile
+      _pane_id=$(tmux display-message -p '#{pane_id}')
+      _prev_profile=$(tmux show-options -pqv -t "$_pane_id" @aws_profile 2>/dev/null)
+      [[ "${AWS_PROFILE:-}" != "$_prev_profile" ]] && \
+        tmux set-option -p -t "$_pane_id" @aws_profile_validated "0"
+      tmux set-option -p -t "$_pane_id" @aws_profile "${AWS_PROFILE:-}"
+    fi
   elif [[ -n ${FISH_VERSION-} ]]; then
     if [[ -n "$1" ]]; then
       [[ "$1" = "left" ]] && __promptline_left_prompt || __promptline_right_prompt
