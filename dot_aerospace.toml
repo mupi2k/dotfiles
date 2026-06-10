@@ -203,29 +203,13 @@ if.app-id = 'com.logi.cp-dev-mgr'
 run = 'move-node-to-workspace U'
 
 [[on-window-detected]]
-if.app-id = 'io.zsa.keymapp'
-run = 'move-node-to-workspace U'
-
-[[on-window-detected]]
 if.app-id = 'com.microsoft.Outlook'
 run = 'move-node-to-workspace 3'
 
 [[on-window-detected]]
-if.app-id = 'net.waterfox.waterfox'
-if.workspace = '1'
-run = 'move-node-to-workspace 4'
+if.app-id = 'com.anthropic.claudefordesktop'
+run = 'move-node-to-workspace C'
 
 [[on-window-detected]]
 if.app-id = 'net.waterfox.waterfox'
-if.workspace = '2'
-run = 'move-node-to-workspace 4'
-
-[[on-window-detected]]
-if.app-id = 'net.waterfox.waterfox'
-if.workspace = '3'
-run = 'move-node-to-workspace 4'
-
-[[on-window-detected]]
-if.app-id = 'net.waterfox.waterfox'
-if.workspace = '8'
-run = 'move-node-to-workspace 4'
+run = 'exec-and-forget bash ~/.config/aerospace/waterfox-guard.sh'
