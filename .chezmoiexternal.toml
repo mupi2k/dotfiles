@@ -3,7 +3,7 @@
 
 [".config/tmux/plugins/tpm"]
     type = "git-repo"
-    url = "git@github.com:tmux-plugins/tpm.git"
+    url = "git@github.com:tmuxpack/tpack.git"
     refreshPeriod = "168h"
 
 [".config/tmux/plugins/tmux-resurrect"]

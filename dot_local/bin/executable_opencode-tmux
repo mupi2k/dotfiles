@@ -1,0 +1,2 @@
+#!/bin/bash
+exec opencode -s $(opencode session list --format json | node -pe "JSON.parse(require('fs').readFileSync('/dev/stdin','utf8')).sort((a,b)=>b.updated-a.updated)[0].id")
