@@ -26,7 +26,17 @@
     url = "git@github.com:erikw/tmux-powerline.git"
     refreshPeriod = "168h"
 
+[".config/tmux/plugins/opensessions"]
+    type = "git-repo"
+    url = "git@github.com:Ataraxy-Labs/opensessions.git"
+    refreshPeriod = "168h"
+
 [".zsh/zsh-autosuggestions"]
     type = "git-repo"
     url = "git@github.com:zsh-users/zsh-autosuggestions.git"
+    refreshPeriod = "168h"
+
+[".hammerspoon"]
+    type = "git-repo"
+    url = "git@github.com:mupi2k/hammerspoon-config.git"
     refreshPeriod = "168h"
